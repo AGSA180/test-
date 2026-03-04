@@ -800,8 +800,14 @@ function ResultScreen({ answers, onRestart, onHome }: { answers: AnswerRecord[],
   const quantStats = getSectionStats(answers.filter(a => a.question.section === 'كمي'));
   const verbalStats = getSectionStats(answers.filter(a => a.question.section === 'لفظي'));
 
+  const [showPrintMessage, setShowPrintMessage] = useState(false);
+
   const handlePrint = () => {
-    window.print();
+    setShowPrintMessage(true);
+    setTimeout(() => {
+      window.print();
+    }, 100);
+    setTimeout(() => setShowPrintMessage(false), 8000);
   };
 
   const handleGenerateStudyPlan = async () => {
@@ -847,6 +853,18 @@ function ResultScreen({ answers, onRestart, onHome }: { answers: AnswerRecord[],
       animate={{ opacity: 1, y: 0 }}
       className="max-w-5xl mx-auto print:max-w-full"
     >
+      {showPrintMessage && (
+        <div className="fixed bottom-4 right-4 bg-slate-800 text-white px-6 py-4 rounded-xl shadow-2xl z-50 print:hidden flex items-start gap-3 max-w-sm border border-slate-700">
+          <Printer className="w-6 h-6 text-blue-400 shrink-0 mt-0.5" />
+          <div>
+            <p className="font-bold text-lg mb-1">جاري تجهيز الطباعة...</p>
+            <p className="text-sm text-slate-300 leading-relaxed">
+              بسبب قيود المتصفح في نافذة العرض هذه، قد لا تعمل الطباعة. لكي تعمل الطباعة بشكل صحيح، يرجى فتح التطبيق في علامة تبويب جديدة (من خلال الرابط الخاص بالتطبيق في الأعلى).
+            </p>
+          </div>
+        </div>
+      )}
+
       <div className="flex items-center justify-between mb-8 print:hidden">
         <h2 className="text-3xl font-extrabold text-slate-900">تقرير الأداء الشامل</h2>
         <div className="flex gap-3">
